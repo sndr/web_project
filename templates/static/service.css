@@ -1,0 +1,125 @@
+/* Estilo para o body */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* Estilo para o título h1 */
+h1 {
+    color: #333;
+}
+
+/* Estilo para o formulário */
+form {
+    max-width: 400px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo para as etiquetas (labels) */
+label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Estilo para os campos de entrada (input) e área de texto (textarea) */
+input[type="text"],
+textarea {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Estilo para o botão de envio */
+input[type="submit"] {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* Estilo para o botão de envio quando o mouse passa por cima */
+input[type="submit"]:hover {
+    background-color: #a01414;
+}
+
+/* Estilo para a caixa de seleção (select) */
+select {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+
+/* Estilo para o rótulo (label) */
+label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Estilo para o campo de upload de arquivo (input[type="file"]) */
+input[type="file"] {
+    display: none; /* Oculta o campo de upload de arquivo padrão */
+}
+
+/* Estilo para o botão de upload personalizado */
+.custom-file-upload {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #333;
+    color: #2828ac;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Estilo para o botão de upload personalizado quando o mouse passa por cima */
+.custom-file-upload:hover {
+    background-color: #422983;
+}
+
+/* Estilo para o texto do arquivo selecionado */
+.file-name {
+    font-style: italic;
+    color: #888;
+}
+s
+/* Estilo para o botão de envio */
+input[type="submit"] {
+    background-color: #333;
+    color: #362fb3;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* Estilo para o botão de envio quando o mouse passa por cima */
+input[type="submit"]:hover {
+    background-color: #555;
+}
+
+
+
+
