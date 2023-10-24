@@ -1,4 +1,5 @@
 
+
 import json
 import mysql.connector
 import pandas as pd
@@ -26,7 +27,7 @@ def menu():
 6 - CADASTRAR NOVA INSTALAÇÃO
 7 - CADASTRAR NOVA MANUNTENÇÃO
 8 - CADASTRAR NOVA REMOÇÃO
-9 - EDITAR UM SERVIÇO
+9 - EXISTE UM SERVIÇO
 10 - SAIR
 ''')
 
@@ -78,16 +79,26 @@ def cad_instalação():
                 info_4 = input("INSIRA O TIPO DO DISPOSITIVO: ")
                 info_5 = input("INSIRA O STATUS: ")
                 info_6 = input("INSIRA O ID: ")
-                add = "INSERT INTO instalacao (ID) VALUES (%s)"
                 cursor = conexao.cursor()
-                cursor.execute(add, (info_6,))
-                att = "UPDATE instalacao SET PLACA = %s, CHASSI = %s, ENDERECO = %s, MODELO = %s, STATUS_INSTALACAO = %s WHERE ID = %s"
-                data = (info_1, info_2, info_3, info_4, info_5, info_6)
-                cursor.execute(att, data)
-                conexao.commit()
-                cursor.close()
-                conexao.close()
-                print("Linhas afetadas:", cursor.rowcount)
+                verificar_id_query = "SELECT ID FROM instalacao WHERE ID = %s"
+                cursor.execute(verificar_id_query, (info_6,))
+                result = cursor.fetchone()
+                if result:
+                    print(f"ID {info_6} já existe. Não é permitido criar um novo com o mesmo valor.")
+                else:
+                    print(f"Inserindo o ID {info_6} na tabela INSTALAÇÃO.")
+                    inserir_id_query = "INSERT INTO instalacao (ID) VALUES (%s)"
+                    cursor.execute(inserir_id_query, (info_6,))
+                    conexao.commit()
+                    add = "INSERT INTO instalacao (ID) VALUES (%s)"
+                    cursor.execute(add, (info_6,))
+                    att = "UPDATE instalacao SET PLACA = %s, CHASSI = %s, ENDERECO = %s, MODELO = %s, STATUS_INSTALACAO = %s WHERE ID = %s"
+                    data = (info_1, info_2, info_3, info_4, info_5, info_6)
+                    cursor.execute(att, data)
+                    conexao.commit()
+                    cursor.close()
+                    conexao.close()
+                    print("Linhas afetadas:", cursor.rowcount)
                 
             elif placa == 2:
                 info_2 = input("DIGITE O CHASSI: ")
@@ -97,14 +108,24 @@ def cad_instalação():
                 info_6 = input("INSIRA O ID: ")
                 add = "INSERT INTO instalacao (ID) VALUES (%s)"
                 cursor = conexao.cursor()
-                cursor.execute(add, (info_6,))
-                att = "UPDATE instalacao SET CHASSI = %s, ENDERECO = %s, MODELO = %s, STATUS_INSTALACAO = %s WHERE ID = %s"
-                data = (info_2, info_3, info_4, info_5, info_6)
-                cursor.execute(att, data)
-                conexao.commit()
-                cursor.close()
-                conexao.close()
-                print("Linhas afetadas:", cursor.rowcount)
+                verificar_id_query = "SELECT ID FROM instalacao WHERE ID = %s"
+                cursor.execute(verificar_id_query, (info_6,))
+                result = cursor.fetchone()
+                if result:
+                    print(f"ID {info_6} já existe. Não é permitido criar um novo com o mesmo valor.")
+                else:
+                    print(f"Inserindo o ID {info_6} na tabela INSTALAÇÃO.")
+                    inserir_id_query = "INSERT INTO instalacao (ID) VALUES (%s)"
+                    cursor.execute(inserir_id_query, (info_6,))
+                    conexao.commit()
+                    cursor.execute(add, (info_6,))
+                    att = "UPDATE instalacao SET CHASSI = %s, ENDERECO = %s, MODELO = %s, STATUS_INSTALACAO = %s WHERE ID = %s"
+                    data = (info_2, info_3, info_4, info_5, info_6)
+                    cursor.execute(att, data)
+                    conexao.commit()
+                    cursor.close()
+                    conexao.close()
+                    print("Linhas afetadas:", cursor.rowcount)
                 
     except Exception as e:
             print(f"Não conseguiu se conectar, {e}")
@@ -130,16 +151,27 @@ def cad_manutenção():
                 info_4 = input("INSIRA O TIPO DO DISPOSITIVO: ")
                 info_5 = input("INSIRA O STATUS: ")
                 info_6 = input("INSIRA O ID: ")
-                add = "INSERT INTO manutencao (ID) VALUES (%s)"
                 cursor = conexao.cursor()
-                cursor.execute(add, (info_6,))
-                att = "UPDATE manutencao SET PLACA = %s, CHASSI = %s, ENDERECO = %s, MODELO = %s, STATUS_INSTALACAO = %s WHERE ID = %s"
-                data = (info_1, info_2, info_3, info_4, info_5, info_6)
-                cursor.execute(att, data)
-                conexao.commit()
-                cursor.close()
-                conexao.close()
-                print("Linhas afetadas:", cursor.rowcount)
+                verificar_id_query = "SELECT ID FROM manutencao WHERE ID = %s"
+                cursor.execute(verificar_id_query, (info_6,))
+                result = cursor.fetchone()
+                if result:
+                    print(f"ID {info_6} já existe. Não é permitido criar um novo com o mesmo valor.")
+                else:
+                    print(f"Inserindo o ID {info_6} na tabela MANUTENÇÃO.")
+                    inserir_id_query = "INSERT INTO manutencao (ID) VALUES (%s)"
+                    cursor.execute(inserir_id_query, (info_6,))
+                    conexao.commit()
+                    add = "INSERT INTO manutencao (ID) VALUES (%s)"
+                    cursor = conexao.cursor()
+                    cursor.execute(add, (info_6,))
+                    att = "UPDATE manutencao SET PLACA = %s, CHASSI = %s, ENDERECO = %s, MODELO = %s, STATUS_INSTALACAO = %s WHERE ID = %s"
+                    data = (info_1, info_2, info_3, info_4, info_5, info_6)
+                    cursor.execute(att, data)
+                    conexao.commit()
+                    cursor.close()
+                    conexao.close()
+                    print("Linhas afetadas:", cursor.rowcount)
                 
             elif placa == 2:
                 info_2 = input("DIGITE O CHASSI: ")
@@ -149,14 +181,24 @@ def cad_manutenção():
                 info_6 = input("INSIRA O ID: ")
                 add = "INSERT INTO manutencao (ID) VALUES (%s)"
                 cursor = conexao.cursor()
-                cursor.execute(add, (info_6,))
-                att = "UPDATE manutencao SET CHASSI = %s, ENDERECO = %s, MODELO = %s, STATUS_INSTALACAO = %s WHERE ID = %s"
-                data = (info_2, info_3, info_4, info_5, info_6)
-                cursor.execute(att, data)
-                conexao.commit()
-                cursor.close()
-                conexao.close()
-                print("Linhas afetadas:", cursor.rowcount)
+                verificar_id_query = "SELECT ID FROM manutencao WHERE ID = %s"
+                cursor.execute(verificar_id_query, (info_6,))
+                result = cursor.fetchone()
+                if result:
+                    print(f"ID {info_6} já existe. Não é permitido criar um novo com o mesmo valor.")
+                else:
+                    print(f"Inserindo o ID {info_6} na tabela MANUTENÇÃO.")
+                    inserir_id_query = "INSERT INTO manutencao (ID) VALUES (%s)"
+                    cursor.execute(inserir_id_query, (info_6,))
+                    conexao.commit()
+                    cursor.execute(add, (info_6,))
+                    att = "UPDATE manutencao SET CHASSI = %s, ENDERECO = %s, MODELO = %s, STATUS_INSTALACAO = %s WHERE ID = %s"
+                    data = (info_2, info_3, info_4, info_5, info_6)
+                    cursor.execute(att, data)
+                    conexao.commit()
+                    cursor.close()
+                    conexao.close()
+                    print("Linhas afetadas:", cursor.rowcount)
                 
     except Exception as e:
         print(f"Não conseguiu se conectar, {e}")
@@ -181,16 +223,26 @@ def cad_remoção():
                 info_4 = input("INSIRA O TIPO DO DISPOSITIVO: ")
                 info_5 = input("INSIRA O STATUS: ")
                 info_6 = input("INSIRA O ID: ")
-                add = "INSERT INTO remocao (ID) VALUES (%s)"
                 cursor = conexao.cursor()
-                cursor.execute(add, (info_6,))
-                att = "UPDATE remocao SET PLACA = %s, CHASSI = %s, ENDERECO = %s, MODELO = %s, STATUS_INSTALACAO = %s WHERE ID = %s"
-                data = (info_1, info_2, info_3, info_4, info_5, info_6)
-                cursor.execute(att, data)
-                conexao.commit()
-                cursor.close()
-                conexao.close()
-                print("Linhas afetadas:", cursor.rowcount)
+                verificar_id_query = "SELECT ID FROM remocao WHERE ID = %s"
+                cursor.execute(verificar_id_query, (info_6,))
+                result = cursor.fetchone()
+                if result:
+                    print(f"ID {info_6} já existe. Não é permitido criar um novo com o mesmo valor.")
+                else:
+                    print(f"Inserindo o ID {info_6} na tabela REMOÇÃO.")
+                    inserir_id_query = "INSERT INTO remocao (ID) VALUES (%s)"
+                    cursor.execute(inserir_id_query, (info_6,))
+                    conexao.commit()
+                    add = "INSERT INTO remocao (ID) VALUES (%s)"
+                    cursor.execute(add, (info_6,))
+                    att = "UPDATE remocao SET PLACA = %s, CHASSI = %s, ENDERECO = %s, MODELO = %s, STATUS_INSTALACAO = %s WHERE ID = %s"
+                    data = (info_1, info_2, info_3, info_4, info_5, info_6)
+                    cursor.execute(att, data)
+                    conexao.commit()
+                    cursor.close()
+                    conexao.close()
+                    print("Linhas afetadas:", cursor.rowcount)
                 
             elif placa == 2:
                 info_2 = input("DIGITE O CHASSI: ")
@@ -198,8 +250,18 @@ def cad_remoção():
                 info_4 = input("INSIRA O TIPO DO DISPOSITIVO: ")
                 info_5 = input("INSIRA O STATUS: ")
                 info_6 = input("INSIRA O ID: ")
-                add = "INSERT INTO remocao (ID) VALUES (%s)"
                 cursor = conexao.cursor()
+                verificar_id_query = "SELECT ID FROM remocao WHERE ID = %s"
+                cursor.execute(verificar_id_query, (info_6,))
+                result = cursor.fetchone()
+                if result:
+                    print(f"ID {info_6} já existe. Não é permitido criar um novo com o mesmo valor.")
+                else:
+                    print(f"Inserindo o ID {info_6} na tabela REMOÇÃO.")
+                    inserir_id_query = "INSERT INTO remocao (ID) VALUES (%s)"
+                    cursor.execute(inserir_id_query, (info_6,))
+                    conexao.commit()
+                add = "INSERT INTO remocao (ID) VALUES (%s)"
                 cursor.execute(add, (info_6,))
                 att = "UPDATE remocao SET CHASSI = %s, ENDERECO = %s, MODELO = %s, STATUS_INSTALACAO = %s WHERE ID = %s"
                 data = (info_2, info_3, info_4, info_5, info_6)
@@ -490,4 +552,5 @@ if __name__ == '__main__':
             exist()
         elif resposta == 10:
             exit()
+            
             
