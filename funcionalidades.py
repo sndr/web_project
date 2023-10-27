@@ -29,11 +29,12 @@ def menu():
 7 - CADASTRAR NOVA MANUNTENÇÃO
 8 - CADASTRAR NOVA REMOÇÃO
 9 - EXISTE UM SERVIÇO
-10 - VER LEN DE TODAS AS COLUNAS
-11 - SAIR
+10 - VER REGISTRO DE TODAS AS COLUNAS
+11 - SEARCH 
+12 - SAIR
 ''')
     
-def mes_instalação():
+def search(chassi,id):
     try:
         conexao = mysql.connector.connect(
             host="localhost",
@@ -43,30 +44,23 @@ def mes_instalação():
             database="dados"
         )
         cursor = conexao.cursor()
-        
-        data_atual = datetime.now()
-        
-        data_formatada = data_atual.strftime("%Y-%m-%d")
-        
-        valores = (dados, data_formatada)
-        
-        
-        sql_query = """
-        SELECT DATE_FORMAT(instalacao, '%Y-%m') AS mes, COUNT(*) AS quantidade
-        FROM sua_tabela
-        GROUP BY mes
-        ORDER BY mes;
-        """
-        cursor.execute(sql_query)
-        resultados = cursor.fetchall()
+        cursor.execute("SHOW TABLES")
+        tables = cursor.fetchall()
+        for table in tables:
+            table_name = table[0]
+            query = f"SELECT * FROM {table_name} WHERE CHASSI = %s AND ID = %s"
+            cursor.execute(query, (chassi, id))
+            row = cursor.fetchone()
+            if row:
+                print(f"Resultado na tabela {table_name}:")
+                print("-"*50)
+                for column, value in zip(cursor.column_names, row):
+                    print(f"{column}: {value}")
+                print('-'*50)    
         cursor.close()
         conexao.close()
-        for resultado in resultados:
-            mes, quantidade = resultado
-            mes_formatado = datetime.strptime(mes, '%Y-%m').strftime('%B %Y')
-            print(f'Mês {mes_formatado}: {quantidade} registros de instalações')
-    except Exception as e:
-        print(f"Não conseguiu se conectar, {e}")
+    except mysql.connector.Error as e:
+        print(f"Não conseguiu se conectar: {e}")
         
 def count_():
     try:
@@ -92,9 +86,9 @@ def count_():
         total_registros3 = resultado[0]
         cursor.close()
         conexao.close()
-        return print(f'''Total de registros na tabela INSTALAÇÃO: {total_registros1}
-Total de registros na tabela REMOÇÃO: {total_registros2}
-Total de registros na tabela MANUTENÇÃO: {total_registros3}''')
+        return print(f'''{'-'*50}\nTotal de registros na tabela INSTALAÇÃO: {total_registros1}\n
+Total de registros na tabela REMOÇÃO: {total_registros2}\n
+Total de registros na tabela MANUTENÇÃO: {total_registros3}\n{'-'*50}''')
     except Exception as e:
         print(f"Não conseguiu se conectar, {e}")
         
@@ -638,7 +632,6 @@ if __name__ == '__main__':
                     STATUS_ENVIO varchar(60),
                     STATUS_AGENDAMENTO varchar(60),
                     STATUS_INSTALACAO varchar(60),
-                    DATE varchar(30),
                     ID varchar(30));''')
                     
                 cursor.execute('''create table manutencao(
@@ -652,7 +645,6 @@ if __name__ == '__main__':
                     STATUS_ENVIO varchar(60),
                     STATUS_AGENDAMENTO varchar(60),
                     STATUS_INSTALACAO varchar(60),
-                    DATE varchar(30),
                     ID varchar(30));''')
                 
                 cursor.execute('''create table remocao(
@@ -666,7 +658,6 @@ if __name__ == '__main__':
                     STATUS_ENVIO varchar(60),
                     STATUS_AGENDAMENTO varchar(60),
                     STATUS_INSTALACAO varchar(60),
-                    DATE varchar(30),
                     ID varchar(30));''')
                 
                 onde = input("NOME DA PASTA QUE VAI SALVAR OS DADOS: ")
@@ -718,6 +709,9 @@ if __name__ == '__main__':
             exist()
         elif resposta == 10:
             count_()
-            mes_instalação()
         elif resposta == 11:
+            chassi = str(input("DIGITE O CHASSI PARA ENCONTRAR NO DB: \n --> "))
+            id_ = str(input("DIGITE O ID TAMBEM \n --> "))
+            search(chassi,id_)
+        elif resposta == 12:
             exit()
