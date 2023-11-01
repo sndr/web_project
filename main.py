@@ -1,160 +1,143 @@
-from flask import Flask, jsonify, render_template, request , redirect , url_for, abort
-import pymysql
-import funcionalidades as func
+from flask import Flask, request, render_template, redirect, url_for, jsonify, make_response
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['API_SORT_KEYS'] = False
+db = SQLAlchemy(app)
 
-# Configurações do banco de dados
-db = pymysql.connect(
-    host="localhost",
-    port=3306,  # Endereço do servidor MySQL
-    user="root",  # Nome de usuário do MySQL
-    password="sndr",  # Senha do MySQL
-    db="dados"  # Nome do banco de dados
-)
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///blog.sqlite3"
 
-@app.route('/api/dados/geral', methods=['GET'])
-def obter_dados():
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM geral")
-    resultados = cursor.fetchall()
-    cursor.close()
-    dados = []
-    for resultado in resultados:
-        dados.append({
-            'PLACA': resultado[0],
-            'CHASSI': resultado[1],
-            'EQUIPAMENTO': resultado[2],
-            'CLIENTE': resultado[3],
-            'MODELO': resultado[4],
-            'ENDERECO': resultado[5],
-            'COD_RASTREIO': resultado[6],
-            'STATUS_ENVIO':resultado[7],
-            'STATUS_AGENDAMENTO':resultado[8],
-            'STATUS_INSTALACAO':resultado[9],
-            'ID':resultado[10]
-        })
-    return jsonify({'dados': dados})
 
-@app.route('/api/dados/instalação', methods=['GET'])
-def obter_instalações():
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM instalacao")
-    resultados = cursor.fetchall()
-    cursor.close()
-    dados = []
-    for resultado in resultados:
-        dados.append({
-            'PLACA': resultado[0],
-            'CHASSI': resultado[1],
-            'EQUIPAMENTO': resultado[2],
-            'CLIENTE': resultado[3],
-            'MODELO': resultado[4],
-            'ENDERECO': resultado[5],
-            'COD_RASTREIO': resultado[6],
-            'STATUS_ENVIO':resultado[7],
-            'STATUS_AGENDAMENTO':resultado[8],
-            'STATUS_INSTALACAO':resultado[9],
-            'ID':resultado[10]
-        })
-    return jsonify({'dados': dados})
+class Post(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    title = db.Column(db.String())
+    content = db.Column(db.String())
+    author = db.Column(db.String())
 
-@app.route('/api/dados/remoção', methods=['GET'])
-def obter_remoções():
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM remocao")
-    resultados = cursor.fetchall()
-    cursor.close()
-    dados = []
-    for resultado in resultados:
-        dados.append({
-            'PLACA': resultado[0],
-            'CHASSI': resultado[1],
-            'EQUIPAMENTO': resultado[2],
-            'CLIENTE': resultado[3],
-            'MODELO': resultado[4],
-            'ENDERECO': resultado[5],
-            'COD_RASTREIO': resultado[6],
-            'STATUS_ENVIO':resultado[7],
-            'STATUS_AGENDAMENTO':resultado[8],
-            'STATUS_INSTALACAO':resultado[9],
-            'ID':resultado[10]
-        })
-    return jsonify({'dados': dados})
+    def to_dict(self):
+        result = {}
+        for key in self.__mapper__.c.keys():
+            if getattr(self, key) is not None:
+                result[key] = str(getattr(self, key))
+            else:
+                result[key] = getattr(self, key)
+        return result
 
-@app.route('/api/dados/manutenção', methods=['GET'])
-def obter_manutenções():
-    cursor = db.cursor()
-    cursor.execute("SELECT * FROM manutencao")
-    resultados = cursor.fetchall()
-    cursor.close()
-    dados = []
-    for resultado in resultados:
-        dados.append({
-            'PLACA': resultado[0],
-            'CHASSI': resultado[1],
-            'EQUIPAMENTO': resultado[2],
-            'CLIENTE': resultado[3],
-            'MODELO': resultado[4],
-            'ENDERECO': resultado[5],
-            'COD_RASTREIO': resultado[6],
-            'STATUS_ENVIO':resultado[7],
-            'STATUS_AGENDAMENTO':resultado[8],
-            'STATUS_INSTALACAO':resultado[9],
-            'ID':resultado[10]
-        })
-    return jsonify({'dados': dados})
 
-@app.route('/search', methods=['GET','POST'])
-def search():
-    return render_template('search.html')
+@app.route("/")
+def home():
+    posts = Post.query.all()
+    return render_template("index.html", posts=posts)
 
-@app.route('/search_response', methods=['GET','POST'])#NÃO ESTA RECEBENDO OS DADOS DO FORMULARIO
-def search_response(chassi,id_):
-    if request.method == 'POST':
-        chassi = request.form.get('chassi') 
-        id_ = request.form.get('id')  
-        results = func.search(chassi,id_)
-        return jsonify(results)
-    
 
-@app.route('/index',methods=['GET','POST'])
-def index():
-    if request.form.get('username') == 'admin' and request.form.get('password') == 'admin': # EXEMPLO FUNCIONAL
-        return render_template("index.html")
+@app.route("/post/add", methods=["POST"])
+def add_post():
+    try:
+        form = request.form
+        post = Post(title=form["title"], content=form["content"], author=form["author"])
+        db.session.add(post)
+        db.session.commit()
+    except Exception as error:
+        print("Error", error)
+
+    return redirect(url_for("home"))
+
+
+@app.route("/post/<id>/del")
+def delete_post(id):
+    try:
+        post = Post.query.get(id)
+        db.session.delete(post)
+        db.session.commit()
+    except Exception as error:
+        print("Error", error)
+
+    return redirect(url_for("home"))
+
+
+@app.route("/post/<id>/edit", methods=["POST", "GET"])
+def edit_post(id):
+    if request.method == "POST":
+        try:
+            post = Post.query.get(id)
+            form = request.form
+            post.title = form["title"]
+            post.content = form["content"]
+            post.author = form["author"]
+            db.session.commit()
+        except Exception as error:
+            print("Error", error)
+
+        return redirect(url_for("home"))
     else:
-        abort(401)
+        try:
+            post = Post.query.get(id)
+            return render_template("edit.html", post=post)
+        except Exception as error:
+            print("Error", error)
 
-@app.route("/", methods=['GET','POST']) # EXEMPLO FUNCIONAL
-def login():
-    return render_template('login.html')
+    return redirect(url_for("home"))
 
-@app.route("/manutenção",methods=['GET','POST'])# OS POSTS SO RECEBEM SE ESTIVEREM NO REDIRECT TAMBEM
-def manutenção():
-    return render_template("manutencao.html")
 
-@app.route("/manutenção/done", methods=['GET','POST'])
-def cad_manutenções():
-    if request.method == 'POST':
-        ... # BASICAMENTE TIVE A IDEIA PERFEITA, SUBSTITUIR OS INPUTS PELOS GETTER DO FORM E FAZER O PROGRAMA RODAR SOZINHO NO MAIN, TIPO VAI SER MUITO CODIGO POREM VAI SER FUNCIONAL
+@app.route("/api/posts")
+def api_list_posts():
+    try:
+        posts = Post.query.all()
+        return jsonify([post.to_dict() for post in posts])
+    except Exception as error:
+        print("Error", error)
 
-@app.route("/remoção")
-def remoção():
-    return render_template("remocao.html")
+    return jsonify([])
 
-@app.route("/instalação")
-def instalação():
-    return render_template("instalacao.html")
 
-''' BETA PARA PUXAR OS DADOS DO MYSQL
-@app.route("/manutenção")
-def manutenção():
-    with db.cursor() as cur:
-        cur.execute("SELECT * FROM manutencao")
-        data = cur.fetchall()
-    return render_template("manutencao.html",data=data)
-'''
+@app.route("/api/post", methods=["PUT"])
+def api_add_post():
+    try:
+        data = request.get_json()
+        post = Post(title=data["title"], content=data["content"], author=data["author"])
+        db.session.add(post)
+        db.session.commit()
+        return jsonify({"success": True})
+    except Exception as error:
+        print("Error", error)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    return jsonify({"success": False})
+
+
+@app.route("/api/post/<id>", methods=["DELETE"])
+def api_delete_post(id):
+    try:
+        post = Post.query.get(id)
+        db.session.delete(post)
+        db.session.commit()
+        return jsonify({"success": True})
+    except Exception as error:
+        print("Error", error)
+
+    return jsonify({"success": False})
+
+
+@app.route("/api/post/<id>", methods=["PUT"])
+def api_edit_post(id):
+    try:
+        post = Post.query.get(id)
+        data = request.get_json()
+        post.title = data["title"]
+        post.content = data["content"]
+        post.author = data["author"]
+        db.session.commit()
+        return jsonify({"success": True})
+    except Exception as error:
+        print("Error", error)
+
+    return jsonify({"success": False})
+
+
+@app.after_request
+def add_header(response):
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Content-Security-Policy"] = "script-src 'unsafe-inline';"
+    return response
+
+
+db.create_all()
+app.run(debug=True)
