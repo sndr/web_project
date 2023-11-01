@@ -2,19 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href ="{{url_for('static',filename='static/index.css')}}">
-    <title>main</title>
-
+    <title>Blog</title>
 </head>
 <body>
-  <div class="menu"> <!-- MENU-->
-    <h2>Qual serviço deseja adicionar ?</h2>
-        <a href="/HTML/manutencao.html"> <button>Manutenção</button></a> 
-        <a href="/HTML/instalacao.html"> <button>Instalação</button></a> 
-        <a href="/HTML/remocao.html"> <button>Remoção</button> </a> 
-
-        <p>clique aqui para adic</p>
-  </div>
+<h1>Blog</h1>
+    <form method="POST" action="{{ url_for('add_post') }}">
+        <label>Title:</label></br>
+        <input name="title"></br></br>
+        <label>Author:</label></br>
+        <input name="author"></br></br>
+        <label>Content:</label></br>
+        <textarea name="content"></textarea></br></br>
+        <input type="submit" value="Submit">
+    </form>
+    <hr>
+    {% for post in posts %}
+        <h2>{{post.title}}</h2>
+        <h4>{{post.author}}</h4>
+        <p>{{post.content}}</p>
+    <a href="{{ url_for('edit_post', id=post.id)}}">Edit</a>
+    <a href="{{ url_for('delete_post', id=post.id)}}">Delete</a>
+    <br><hr>
+    {% endfor %}
 </body>
 </html>
