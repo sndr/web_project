@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pesquisa em Banco de Dados</title>
+</head>
+<body>
+    <h1>Pesquisa em Banco de Dados</h1>
+    <form action="/search_response" method="post">
+        CHASSI: <input type="text" name="chassi"><br/>
+        ID: <input type="text" name="id"><br/>
+        <button type="submit">Pesquisar</button>
+    </form>
+    <div>
+        <h2>Resultado da Pesquisa:</h2>
+        <p>{{ results }}</p>
+    </div>
+</body>
+</html>
