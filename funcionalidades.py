@@ -5,7 +5,6 @@ import pandas as pd
 from datetime import datetime
 import os
 
-
 tipos = ['PLACA ',
         'CHASSI ',
         'EQUIPAMENTO',
@@ -34,7 +33,7 @@ def menu():
 12 - SAIR
 ''')
     
-def search(chassi,id):
+def search(chassi,id_):
     try:
         conexao = mysql.connector.connect(
             host="localhost",
@@ -49,14 +48,14 @@ def search(chassi,id):
         for table in tables:
             table_name = table[0]
             query = f"SELECT * FROM {table_name} WHERE CHASSI = %s AND ID = %s"
-            cursor.execute(query, (chassi, id))
+            cursor.execute(query, (chassi, id_))
             row = cursor.fetchone()
             if row:
                 print(f"Resultado na tabela {table_name}:")
                 print("-"*50)
                 for column, value in zip(cursor.column_names, row):
                     print(f"{column}: {value}")
-                print('-'*50)    
+                print('-'*50)
         cursor.close()
         conexao.close()
     except mysql.connector.Error as e:
@@ -118,7 +117,6 @@ def exist():
         conexao.close()
     except Exception as e:
         print(f"Não conseguiu se conectar, {e}")
-
 
 def cad_instalação():
     try:
