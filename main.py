@@ -305,15 +305,111 @@ def manutenção():
 @app.route("/manutenção/done", methods=['GET','POST'])
 def cad_manutenções():
     if request.method == 'POST':
+        info_1 = request.form.get('placa')
+        info_2 = request.form.get('chassi')
+        info_3 = request.form.get('equipamento')
+        info_4 = request.form.get('cliente')
+        info_5 = request.form.get('modelo')
+        sql_query = f"SELECT COUNT(*) FROM manutencao"
+        cursor = db.cursor()
+        cursor.execute(sql_query)
+        resultado = cursor.fetchone()
+        total_registros1 = resultado[0]
+        info_6 = total_registros1 + 1
+        result = cursor.fetchone()
+        if result:
+            print(f"ID {info_6} já existe. Não é permitido criar um novo com o mesmo valor.")
+        else:
+            print(f"Inserindo o ID {info_6} na tabela REMOÇÃO.")
+            add = "INSERT INTO manutencao (ID) VALUES (%s)"
+            cursor.execute(add, (info_6,))
+            db.commit()
+            att = "UPDATE manutencao SET PLACA = %s, CHASSI = %s, EQUIPAMENTO = %s, CLIENTE = %s, MODELO = %s WHERE ID = %s"
+            data = (info_1, info_2, info_3, info_4, info_5, info_6)
+            cursor.execute(att, data)
+            db.commit()
+            cursor.close()
+            db.close()
+            print("Linhas afetadas:", cursor.rowcount)
+            if cursor.rowcount == 1:
+                return render_template('sucesso.html')
         ... # BASICAMENTE TIVE A IDEIA PERFEITA, SUBSTITUIR OS INPUTS PELOS GETTER DO FORM E FAZER O PROGRAMA RODAR SOZINHO NO MAIN, TIPO VAI SER MUITO CODIGO POREM VAI SER FUNCIONAL
 
 @app.route("/remoção", methods=['GET','POST'])
 def remoção():
     return render_template("remocao.html")
 
+@app.route("/remoção/done" , methods=['GET', 'POST'])
+def cad_remoção():
+    if request.method == 'POST':
+        info_1 = request.form.get('placa')
+        info_2 = request.form.get('chassi')
+        info_3 = request.form.get('equipamento')
+        info_4 = request.form.get('cliente')
+        info_5 = request.form.get('modelo')
+        sql_query = f"SELECT COUNT(*) FROM remocao"
+        cursor = db.cursor()
+        cursor.execute(sql_query)
+        resultado = cursor.fetchone()
+        total_registros1 = resultado[0]
+        info_6 = total_registros1 + 1
+        result = cursor.fetchone()
+        if result:
+            print(f"ID {info_6} já existe. Não é permitido criar um novo com o mesmo valor.")
+        else:
+            print(f"Inserindo o ID {info_6} na tabela REMOÇÃO.")
+            add = "INSERT INTO remocao (ID) VALUES (%s)"
+            cursor.execute(add, (info_6,))
+            db.commit()
+            att = "UPDATE remocao SET PLACA = %s, CHASSI = %s, EQUIPAMENTO = %s, CLIENTE = %s, MODELO = %s WHERE ID = %s"
+            data = (info_1, info_2, info_3, info_4, info_5, info_6)
+            cursor.execute(att, data)
+            db.commit()
+            cursor.close()
+            db.close()
+            print("Linhas afetadas:", cursor.rowcount)
+            if cursor.rowcount == 1:
+                return render_template('sucesso.html')
+            else:
+                print("DEU PROBLEMA")
+    
 @app.route("/instalação", methods=['GET','POST'])
 def instalação():
     return render_template("instalacao.html")
+
+@app.route("/instalação/done", methods=['GET','POST'])
+def cad_instalação():
+    if request.method == 'POST':
+        info_1 = request.form.get('placa')
+        info_2 = request.form.get('chassi')
+        info_3 = request.form.get('equipamento')
+        info_4 = request.form.get('cliente')
+        info_5 = request.form.get('modelo')
+        sql_query = f"SELECT COUNT(*) FROM instalacao"
+        cursor = db.cursor()
+        cursor.execute(sql_query)
+        resultado = cursor.fetchone()
+        total_registros1 = resultado[0]
+        info_6 = total_registros1 + 1
+        result = cursor.fetchone()
+        if result:
+            print(f"ID {info_6} já existe. Não é permitido criar um novo com o mesmo valor.")
+        else:
+            print(f"Inserindo o ID {info_6} na tabela REMOÇÃO.")
+            add = "INSERT INTO instalacao (ID) VALUES (%s)"
+            cursor.execute(add, (info_6,))
+            db.commit()
+            att = "UPDATE instalacao SET PLACA = %s, CHASSI = %s, EQUIPAMENTO = %s, CLIENTE = %s, MODELO = %s WHERE ID = %s"
+            data = (info_1, info_2, info_3, info_4, info_5, info_6)
+            cursor.execute(att, data)
+            db.commit()
+            cursor.close()
+            db.close()
+            print("Linhas afetadas:", cursor.rowcount)
+            if cursor.rowcount == 1:
+                return render_template('sucesso.html')
+            else:
+                print("ERRO")
 
 '''
 @app.route("/manutenção")
