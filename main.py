@@ -11,7 +11,7 @@ app.config['API_SORT_KEYS'] = False
 
 # Configurações do banco de dados
 db = pymysql.connect(
-    host="127.0.0.1",
+    host="localhost",
     port=3306,  # Endereço do servidor MySQL
     user="root",  # Nome de usuário do MySQL
     password="sndr",  # Senha do MySQL
@@ -76,6 +76,7 @@ def obter_instalações():
             'ID':resultado[10]
         })
     return jsonify({'dados': dados})
+
 
 @app.route('/api/dados/remoção', methods=['GET'])
 def obter_remoções():
@@ -150,8 +151,7 @@ def search_response():
                     print(f"{column}: {value}")
                 print('-' * 50)
         cursor.close()
-
-    db.close()  # Close the database connection outside the 'if' block to ensure it's always closed.
+ # Close the database connection outside the 'if' block to ensure it's always closed.
 
     # Return an empty list if no data was found in any table
     return jsonify(dados) # ESTA MOSTRANDO ALEM DO QUE EU QUERO..............................
@@ -195,6 +195,7 @@ def extração():
             'STATUS_AGENDAMENTO',
             'STATUS_INSTALACAO',
             'ID ']
+    
     cursor = db.cursor()
     cursor.execute('''create table instalacao(
         PLACA varchar(60),
@@ -263,7 +264,6 @@ def extração():
             lista = []
 
     cursor.close()
-    db.close()
     print("ENVIADO")
     return render_template("sucesso.html")
 ''' 
@@ -329,7 +329,6 @@ def cad_manutenções():
             cursor.execute(att, data)
             db.commit()
             cursor.close()
-            db.close()
             print("Linhas afetadas:", cursor.rowcount)
             if cursor.rowcount == 1:
                 return render_template('sucesso.html')
@@ -366,7 +365,6 @@ def cad_remoção():
             cursor.execute(att, data)
             db.commit()
             cursor.close()
-            db.close()
             print("Linhas afetadas:", cursor.rowcount)
             if cursor.rowcount == 1:
                 return render_template('sucesso.html')
@@ -404,7 +402,6 @@ def cad_instalação():
             cursor.execute(att, data)
             db.commit()
             cursor.close()
-            db.close()
             print("Linhas afetadas:", cursor.rowcount)
             if cursor.rowcount == 1:
                 return render_template('sucesso.html')
