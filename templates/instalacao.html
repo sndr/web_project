@@ -27,13 +27,17 @@
         <label for="cliente">Cliente:</label>
         <input type="text" id="cliente" name="cliente" ><br>
 
+        <label for="endereco">Endereço:</label>
+        <input type="text" id="endereco" name="endereco" ><br>
+
         <label for="telefone">Modelo:</label>
         <input type="text" id="modelo" name="modelo"><br>
         <input type="submit" value="Enviar">
 
         <p>ou adicione em massa via Excel</p>
-
-        <label for="arquivo">Selecione um arquivo:</label>
+    </form>
+    <form action="instalação/done" method="POST","GET" enctype="multipart/form-data">
+        <label for="arquivo">----CLIQUE AQUI</label>
         <input type="file" id="arquivo" name="arquivo" accept=".xlsx"><br>
         <input type="submit" value="Enviar Arquivo">
     </form>
